@@ -177,6 +177,7 @@ func (m *RemoteSource) GetAddress() string {
 
 type Plugin struct {
 	// Types that are valid to be assigned to WasmSource:
+	//
 	//	*Plugin_Local
 	//	*Plugin_Remote
 	WasmSource           isPlugin_WasmSource `protobuf_oneof:"wasm_source"`
