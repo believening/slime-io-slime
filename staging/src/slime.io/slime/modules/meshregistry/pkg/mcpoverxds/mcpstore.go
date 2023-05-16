@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"istio.io/istio-mcp/pkg/config/schema/resource"
 	mcpmodel "istio.io/istio-mcp/pkg/model"
 )
@@ -67,12 +68,36 @@ func (s *McpConfigStore) Update(ns string, gvk resource.GroupVersionKind, name s
 	prev = gvkConfigs[name]
 	if config == nil {
 		delete(gvkConfigs, name)
+		s.nsVersions[ns] = strNow()
 	} else {
-		gvkConfigs[name] = config
+		// only update when config changed
+		if !proto.Equal(prev.Spec, config.Spec) || !metaDeepEqual(&prev.ConfigMeta, &config.ConfigMeta) {
+			gvkConfigs[name] = config
+			s.nsVersions[ns] = strNow()
+		}
 	}
-	s.nsVersions[ns] = strNow()
 
 	return
+}
+
+func metaDeepEqual(a, b *mcpmodel.ConfigMeta) bool {
+	mapStrStrDeepEqual := func(m1, m2 map[string]string) bool {
+		if len(m1) != len(m2) {
+			return false
+		}
+		for k, v1 := range m1 {
+			v2, exist := m2[k]
+			if !exist {
+				return false
+			}
+			if v2 != v1 {
+				return false
+			}
+		}
+		return true
+	}
+	// for now we only fill in the Labels and the Annotations
+	return mapStrStrDeepEqual(a.Labels, b.Labels) && mapStrStrDeepEqual(a.Annotations, b.Annotations)
 }
 
 func (s *McpConfigStore) Version(ns string) string {

@@ -72,7 +72,7 @@ func NewController(args *bootstrap.RegistryArgs) (*McpController, error) {
 	})
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprint("new xds server with url %s met err %v", args.Mcp.ServerUrl, err))
+		return nil, fmt.Errorf("new xds server with url %s met err %v", args.Mcp.ServerUrl, err)
 	} else {
 		impl.mcpServer = svr
 	}
