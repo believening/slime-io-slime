@@ -69,6 +69,8 @@ $(FRAMEWORK_API_PROTOS):
 		--gogo_opt=Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types \
 		--gogo_opt=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types \
 		--gogo_opt=Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types \
+		--golang-jsonshim_out=$(input_dir) \
+		--golang-jsonshim_opt=paths=source_relative \
 		$@
 framework-api-gen: $(FRAMEWORK_API_PROTOS)
 

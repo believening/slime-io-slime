@@ -33,7 +33,8 @@ RUN go install sigs.k8s.io/controller-tools/cmd/controller-gen@${CONTROLLER_GEN_
 
 # install istio code-generator
 RUN go install istio.io/tools/cmd/protoc-gen-jsonshim@${ISTIO_TOOLS_VERSION} && \
-    go install istio.io/tools/cmd/protoc-gen-deepcopy@${ISTIO_TOOLS_VERSION}
+    go install istio.io/tools/cmd/protoc-gen-deepcopy@${ISTIO_TOOLS_VERSION} && \
+    go install -ldflags="-s -w" istio.io/tools/cmd/protoc-gen-golang-jsonshim@1.14.0
 
 # install gogo protobuf
 RUN go install github.com/gogo/protobuf/protoc-gen-gogo@v${GOGO_PROTOBUF_VERSION} && \
